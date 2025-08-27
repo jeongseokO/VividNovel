@@ -5,7 +5,7 @@ const {
 } = React;
 const voiceOptions = ['Zephyr', 'Leda', 'Luca', 'Apollo', 'Charon'];
 function App() {
-  const [view, setView] = useState('home'); // 'home','upload','characters','backgrounds','episodes','play'
+  const [view, setView] = useState('home'); // 'home','project','generate','characters','backgrounds','episodes','play'
   const [projects, setProjects] = useState(() => {
     const saved = localStorage.getItem('projects');
     return saved ? JSON.parse(saved) : [];
@@ -21,7 +21,7 @@ function App() {
   const [showMyCount, setShowMyCount] = useState(8);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [episodeStatus, setEpisodeStatus] = useState('idle');
+  const [genStatus, setGenStatus] = useState('idle');
   const audioRef = useRef(null);
   useEffect(() => {
     localStorage.setItem('projects', JSON.stringify(projects));
@@ -45,14 +45,14 @@ function App() {
     setSelectedId(id);
     setFile(null);
     setNovelData(project.novelData || null);
-    setView(project.step || 'upload');
+    setView(project.step || 'project');
   }
   function handleNewProject() {
     const id = Date.now();
     const project = {
       id,
       name: '제목 없음',
-      step: 'upload',
+      step: 'project',
       novelText: '',
       novelData: null,
       episodes: []
@@ -70,21 +70,29 @@ function App() {
     return projects.find(p => p.id === selectedId);
   }
   function generateEpisode() {
-    setEpisodeStatus('generating');
+    const project = getCurrentProject();
+    if (!project) return;
+    setGenStatus('generating');
+    const episodes = project.episodes || [];
+    const newEp = {
+      id: Date.now(),
+      title: `Episode ${episodes.length + 1}`,
+      status: 'generating'
+    };
+    updateProject(selectedId, {
+      episodes: [...episodes, newEp]
+    });
     setTimeout(() => {
-      const project = getCurrentProject();
-      if (!project) return;
-      const episodes = project.episodes || [];
-      const newEp = {
-        id: Date.now(),
-        title: `Episode ${episodes.length + 1}`
-      };
-      const updated = [...episodes, newEp];
+      const updatedProject = getCurrentProject();
+      if (!updatedProject) return;
       updateProject(selectedId, {
-        episodes: updated
+        episodes: updatedProject.episodes.map(ep => ep.id === newEp.id ? {
+          ...ep,
+          status: 'available'
+        } : ep)
       });
-      setEpisodeStatus('completed');
-      setTimeout(() => setEpisodeStatus('idle'), 1000);
+      setGenStatus('completed');
+      setTimeout(() => setGenStatus('idle'), 1000);
     }, 1500);
   }
   function handleDrop(e) {
@@ -121,12 +129,12 @@ function App() {
     const res = await fetch('data/novel.json');
     const data = await res.json();
     updateProject(selectedId, {
-      step: 'characters',
+      step: 'project',
       novelText: text,
       novelData: data
     });
     setNovelData(data);
-    setView('characters');
+    setView('project');
   }
   function handleVoiceChange(idx, voice) {
     if (!novelData) return;
@@ -228,9 +236,12 @@ function App() {
     }, /*#__PURE__*/React.createElement("div", {
       className: "tabs"
     }, /*#__PURE__*/React.createElement("div", {
-      className: `tab ${view === 'upload' ? 'active' : ''}`,
-      onClick: () => setView('upload')
-    }, "\uC5C5\uB85C\uB4DC"), /*#__PURE__*/React.createElement("div", {
+      className: `tab ${view === 'project' ? 'active' : ''}`,
+      onClick: () => setView('project')
+    }, "\uD504\uB85C\uC81D\uD2B8 \uD648"), /*#__PURE__*/React.createElement("div", {
+      className: `tab ${view === 'generate' ? 'active' : ''}`,
+      onClick: () => setView('generate')
+    }, "\uC0DD\uC131"), /*#__PURE__*/React.createElement("div", {
       className: `tab ${view === 'characters' ? 'active' : ''}`,
       onClick: () => setView('characters')
     }, "\uCE90\uB9AD\uD130"), /*#__PURE__*/React.createElement("div", {
@@ -239,10 +250,7 @@ function App() {
     }, "\uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
       className: `tab ${view === 'episodes' ? 'active' : ''}`,
       onClick: () => setView('episodes')
-    }, "\uC5D0\uD53C\uC18C\uB4DC")), view !== 'play' && /*#__PURE__*/React.createElement("button", {
-      className: "play-btn",
-      onClick: startPlay
-    }, "\uC7AC\uC0DD"));
+    }, "\uC5D0\uD53C\uC18C\uB4DC")));
   }
   function renderWithLayout(content) {
     const username = localStorage.getItem('username');
@@ -310,16 +318,21 @@ function App() {
     }), /*#__PURE__*/React.createElement("p", null, p.title))))));
     return renderWithLayout(content);
   }
-  function renderUpload() {
+  function renderProjectHome() {
+    const project = getCurrentProject();
     const content = /*#__PURE__*/React.createElement("div", {
+      className: "project-home"
+    }, /*#__PURE__*/React.createElement("div", {
       className: "drop-zone",
       onDragOver: e => e.preventDefault(),
       onDrop: handleDrop
-    }, /*#__PURE__*/React.createElement("p", null, "\uC5EC\uAE30\uB85C \uD14D\uC2A4\uD2B8 \uBB38\uC11C\uB098 PDF\uB97C Drag&Drop\uD558\uC138\uC694."));
+    }, /*#__PURE__*/React.createElement("p", null, "\uC5EC\uAE30\uB85C \uD14D\uC2A4\uD2B8 \uBB38\uC11C\uB098 PDF\uB97C Drag&Drop\uD558\uC138\uC694.")), project?.novelData && /*#__PURE__*/React.createElement("div", {
+      className: "doc-info"
+    }, /*#__PURE__*/React.createElement("h3", null, "\uBB38\uC11C \uC815\uBCF4"), /*#__PURE__*/React.createElement("p", null, `\uBB38\uC11C \uAE38\uC774: ${project.novelText.length}\uC790`), /*#__PURE__*/React.createElement("p", null, `\uCE90\uB9AD\uD130 \uC218: ${project.novelData.characters.length}`), /*#__PURE__*/React.createElement("p", null, `\uBC30\uACBD \uC218: ${project.novelData.backgrounds.length}`)));
     return renderWithLayout(content);
   }
   function renderCharacters() {
-    if (!novelData) return renderUpload();
+    if (!novelData) return renderProjectHome();
     const content = /*#__PURE__*/React.createElement("div", {
       className: "main-setup"
     }, /*#__PURE__*/React.createElement("div", {
@@ -340,7 +353,7 @@ function App() {
     return renderWithLayout(content);
   }
   function renderBackgrounds() {
-    if (!novelData) return renderUpload();
+    if (!novelData) return renderProjectHome();
     const content = /*#__PURE__*/React.createElement("div", {
       className: "main-setup"
     }, /*#__PURE__*/React.createElement("div", {
@@ -361,18 +374,25 @@ function App() {
       className: "main-setup"
     }, /*#__PURE__*/React.createElement("section", {
       className: "episodes-section"
-    }, /*#__PURE__*/React.createElement("h3", null, "\uC774\uC804\uC5D0 \uB9CC\uB4E0 \uC5D0\uD53C\uC18C\uB4DC"), episodes.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    }, /*#__PURE__*/React.createElement("h3", null, "\uC5D0\uD53C\uC18C\uB4DC"), episodes.length === 0 ? /*#__PURE__*/React.createElement("p", {
       className: "empty-info"
     }, "\uC774\uC804 \uC5D0\uD53C\uC18C\uB4DC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.") : /*#__PURE__*/React.createElement("ul", {
       className: "episode-list"
     }, episodes.map(ep => /*#__PURE__*/React.createElement("li", {
       key: ep.id
-    }, ep.title)))), /*#__PURE__*/React.createElement("section", {
+    }, `${ep.title} - ${ep.status === 'generating' ? '\uC0DD\uC131 \uC911' : 'Available'}`)))));
+    return renderWithLayout(content);
+  }
+
+  function renderGenerate() {
+    const content = /*#__PURE__*/React.createElement("div", {
+      className: "main-setup"
+    }, /*#__PURE__*/React.createElement("section", {
       className: "episodes-section"
-    }, /*#__PURE__*/React.createElement("h3", null, "\uC0C8 \uC5D0\uD53C\uC18C\uB4DC"), episodeStatus === 'idle' && /*#__PURE__*/React.createElement("button", {
+    }, /*#__PURE__*/React.createElement("h3", null, "\uC5D0\uD53C\uC18C\uB4DC \uC0DD\uC131"), genStatus === 'idle' && /*#__PURE__*/React.createElement("button", {
       className: "generate-episode-btn",
       onClick: generateEpisode
-    }, "\uC0DD\uC131\uD558\uAE30"), episodeStatus === 'generating' && /*#__PURE__*/React.createElement("p", null, "\uC0DD\uC131 \uC911..."), episodeStatus === 'completed' && /*#__PURE__*/React.createElement("p", null, "\uC0DD\uC131 \uC644\uB8CC!")));
+    }, "\uC0DD\uC131 \uC2DC\uC791"), genStatus === 'generating' && /*#__PURE__*/React.createElement("p", null, "\uC0DD\uC131\uC911..."), genStatus === 'completed' && /*#__PURE__*/React.createElement("p", null, "\uC0DD\uC131 \uC644\uB8CC!")));
     return renderWithLayout(content);
   }
   function renderPlay() {
@@ -402,7 +422,8 @@ function App() {
     return renderWithLayout(content);
   }
   if (view === 'home') return renderHome();
-  if (view === 'upload') return renderUpload();
+  if (view === 'project') return renderProjectHome();
+  if (view === 'generate') return renderGenerate();
   if (view === 'characters') return renderCharacters();
   if (view === 'backgrounds') return renderBackgrounds();
   if (view === 'episodes') return renderEpisodes();
