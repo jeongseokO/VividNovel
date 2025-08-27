@@ -29,3 +29,15 @@ async function readFile(file) {
   }
   return await file.text();
 }
+
+// 드래그 앤 드롭 업로드 지원
+document.addEventListener('dragover', e => {
+  e.preventDefault();
+});
+
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+  }
+});
