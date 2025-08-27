@@ -52,10 +52,30 @@ function App() {
     _useState0 = _slicedToArray(_useState9, 2),
     currentSceneIdx = _useState0[0],
     setCurrentSceneIdx = _useState0[1];
+  var _useState1 = useState([]),
+    _useState10 = _slicedToArray(_useState1, 2),
+    publicProjects = _useState10[0],
+    setPublicProjects = _useState10[1];
+  var _useState11 = useState('characters'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    activeTab = _useState12[0],
+    setActiveTab = _useState12[1];
+  var _useState13 = useState(false),
+    _useState14 = _slicedToArray(_useState13, 2),
+    isAudioLoading = _useState14[0],
+    setIsAudioLoading = _useState14[1];
   var audioRef = useRef(null);
   useEffect(function () {
     localStorage.setItem('projects', JSON.stringify(projects));
   }, [projects]);
+  useEffect(function () {
+    fetch('data/public-projects.json').then(function (res) {
+      return res.json();
+    }).then(setPublicProjects);
+  }, []);
+  useEffect(function () {
+    setActiveTab('characters');
+  }, [selectedId]);
   var selectedProject = projects.find(function (p) {
     return p.id === selectedId;
   });
@@ -306,10 +326,12 @@ function App() {
               break;
             }
             setCurrentSceneIdx(_i);
+            setIsAudioLoading(true);
             _context5.n = 6;
             return generateAudio(chunks[_i]);
           case 6:
             src = _context5.v;
+            setIsAudioLoading(false);
             audioRef.current.pause();
             audioRef.current.src = src;
             audioRef.current.play();
@@ -334,11 +356,26 @@ function App() {
     }));
     return _startPlay.apply(this, arguments);
   }
+  function toggleFullscreen() {
+    var el = document.querySelector('.scene-wrapper');
+    if (!document.fullscreenElement) {
+      el.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
   return /*#__PURE__*/React.createElement("div", {
     className: "app"
   }, /*#__PURE__*/React.createElement("aside", {
     className: "sidebar"
-  }, /*#__PURE__*/React.createElement("h1", null, "VividNovel"), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h1", {
+    onClick: function onClick() {
+      return setSelectedId(null);
+    }
+  }, "VividNovel"), /*#__PURE__*/React.createElement("div", {
+    className: "new-project",
+    onClick: handleNewProject
+  }, "+ \uC0C8 \uD504\uB85C\uC81D\uD2B8"), /*#__PURE__*/React.createElement("div", {
     className: "projects"
   }, projects.map(function (p) {
     return /*#__PURE__*/React.createElement("div", {
@@ -348,22 +385,23 @@ function App() {
         return setSelectedId(p.id);
       }
     }, p.name);
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "new-project",
-    onClick: handleNewProject
-  }, "+ \uC0C8 \uD504\uB85C\uC81D\uD2B8")), /*#__PURE__*/React.createElement("main", {
+  }))), /*#__PURE__*/React.createElement("main", {
     className: "main"
   }, selectedProject ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "topbar"
-  }, selectedProject.name), selectedProject.step !== 'play' && /*#__PURE__*/React.createElement("div", {
+  }, selectedProject.name), selectedProject.step === 'upload' && /*#__PURE__*/React.createElement("div", {
     className: "content"
-  }, selectedProject.step === 'upload' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "\uC18C\uC124 \uD30C\uC77C(txt, pdf)\uC744 \uC5C5\uB85C\uB4DC\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("p", null, "\uC18C\uC124 \uD30C\uC77C(txt, pdf)\uC744 \uC5C5\uB85C\uB4DC\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("input", {
     type: "file",
     onChange: handleFile,
     accept: ".txt,.text,.pdf"
   }), /*#__PURE__*/React.createElement("button", {
     onClick: startGenerate
-  }, "\uC0DD\uC131 \uC2DC\uC791")), selectedProject.step === 'setup' && selectedProject.novelData && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uB4F1\uC7A5\uC778\uBB3C & \uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
+  }, "\uC0DD\uC131 \uC2DC\uC791")), selectedProject.step === 'setup' && selectedProject.novelData && /*#__PURE__*/React.createElement("div", {
+    className: "content with-right-tabs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "main-setup"
+  }, activeTab === 'characters' && /*#__PURE__*/React.createElement("div", {
     className: "flex"
   }, selectedProject.novelData.characters.map(function (ch, idx) {
     return /*#__PURE__*/React.createElement("div", {
@@ -383,7 +421,7 @@ function App() {
         value: v
       }, v);
     }))));
-  })), /*#__PURE__*/React.createElement("h2", null, "\uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
+  })), activeTab === 'background' && /*#__PURE__*/React.createElement("div", {
     className: "flex"
   }, selectedProject.novelData.backgrounds.map(function (bg, idx) {
     return /*#__PURE__*/React.createElement("div", {
@@ -393,21 +431,54 @@ function App() {
       src: bg.image,
       alt: bg.name
     }), /*#__PURE__*/React.createElement("h3", null, bg.name), /*#__PURE__*/React.createElement("p", null, bg.mood));
-  })), /*#__PURE__*/React.createElement("button", {
+  })), activeTab === 'episode' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "Episode \uC900\uBE44 \uC911...")), /*#__PURE__*/React.createElement("button", {
     onClick: startPlay
-  }, "\uC7AC\uC0DD \uC2DC\uC791"))), selectedProject.step === 'play' && /*#__PURE__*/React.createElement("div", {
+  }, "\uC7AC\uC0DD \uC2DC\uC791")), /*#__PURE__*/React.createElement("aside", {
+    className: "right-tabs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: 'tab ' + (activeTab === 'characters' ? 'active' : ''),
+    onClick: function onClick() {
+      return setActiveTab('characters');
+    }
+  }, "\uCE90\uB9AD\uD130"), /*#__PURE__*/React.createElement("div", {
+    className: 'tab ' + (activeTab === 'background' ? 'active' : ''),
+    onClick: function onClick() {
+      return setActiveTab('background');
+    }
+  }, "\uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
+    className: 'tab ' + (activeTab === 'episode' ? 'active' : ''),
+    onClick: function onClick() {
+      return setActiveTab('episode');
+    }
+  }, "Episode"))), selectedProject.step === 'play' && /*#__PURE__*/React.createElement("div", {
     className: "scene-wrapper"
   }, scenes[currentSceneIdx] && /*#__PURE__*/React.createElement("img", {
     src: scenes[currentSceneIdx],
     alt: "Scene ".concat(currentSceneIdx + 1),
     className: "scene-image"
-  }), /*#__PURE__*/React.createElement("audio", {
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "fullscreen-btn",
+    onClick: toggleFullscreen
+  }, "\u2922"), isAudioLoading && /*#__PURE__*/React.createElement("div", {
+    className: "loading-overlay"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "spinner"
+  })), /*#__PURE__*/React.createElement("audio", {
     ref: audioRef
   }))) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "topbar"
-  }), /*#__PURE__*/React.createElement("div", {
+  }, "Home"), /*#__PURE__*/React.createElement("div", {
     className: "content"
-  }, "\uD504\uB85C\uC81D\uD2B8\uB97C \uC120\uD0DD\uD558\uAC70\uB098 \uC0C8\uB85C \uB9CC\uB4DC\uC138\uC694."))));
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "public-grid"
+  }, publicProjects.map(function (p) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.id,
+      className: "public-card"
+    }, /*#__PURE__*/React.createElement("img", {
+      src: p.thumbnail,
+      alt: p.name
+    }), /*#__PURE__*/React.createElement("h3", null, p.name));
+  }))))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
-

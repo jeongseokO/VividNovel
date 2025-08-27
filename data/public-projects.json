@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "환상적인 모험", "thumbnail": "https://placehold.co/300x200?text=Project+1" },
+  { "id": 2, "name": "미스터리 사건", "thumbnail": "https://placehold.co/300x200?text=Project+2" },
+  { "id": 3, "name": "사랑 이야기", "thumbnail": "https://placehold.co/300x200?text=Project+3" }
+]
