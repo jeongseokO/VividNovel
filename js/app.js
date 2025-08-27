@@ -46,6 +46,10 @@ function App() {
     scenes = _useState0[0],
     setScenes = _useState0[1];
   var audioRef = useRef(null);
+  var _useState1 = useState(0),
+    _useState10 = _slicedToArray(_useState1, 2),
+    currentSceneIdx = _useState10[0],
+    setCurrentSceneIdx = _useState10[1];
   var handleFile = function handleFile(e) {
     return setFile(e.target.files[0]);
   };
@@ -235,34 +239,48 @@ function App() {
             setStep('play');
             chunks = chunkText(novelText);
             preloadCount = Math.min(5, chunks.length);
-            for (i = 0; i < preloadCount; i++) {
-              generateScene(i);
-            }
-            _i = 0;
+            i = 0;
           case 1:
-            if (!(_i < chunks.length)) {
-              _context5.n = 4;
+            if (!(i < preloadCount)) {
+              _context5.n = 3;
               break;
             }
             _context5.n = 2;
-            return generateAudio(chunks[_i]);
+            return generateScene(i);
           case 2:
+            i++;
+            _context5.n = 1;
+            break;
+          case 3:
+            _i = 0;
+          case 4:
+            if (!(_i < chunks.length)) {
+              _context5.n = 7;
+              break;
+            }
+            setCurrentSceneIdx(_i);
+            _context5.n = 5;
+            return generateAudio(chunks[_i]);
+          case 5:
             src = _context5.v;
+            audioRef.current.pause();
             audioRef.current.src = src;
             audioRef.current.play();
             nextSceneIdx = _i + preloadCount;
             if (nextSceneIdx < chunks.length) {
               generateScene(nextSceneIdx);
             }
-            _context5.n = 3;
+            _context5.n = 6;
             return new Promise(function (res) {
-              return audioRef.current.onended = res;
+              return setTimeout(res, 5000);
             });
-          case 3:
+          case 6:
             _i++;
-            _context5.n = 1;
+            _context5.n = 4;
             break;
-          case 4:
+          case 7:
+            audioRef.current.pause();
+          case 8:
             return _context5.a(2);
         }
       }, _callee5);
@@ -270,8 +288,14 @@ function App() {
     return _startPlay.apply(this, arguments);
   }
   return /*#__PURE__*/React.createElement("div", {
+    className: "app"
+  }, /*#__PURE__*/React.createElement("aside", {
+    className: "sidebar"
+  }, /*#__PURE__*/React.createElement("h1", null, "VividNovel")), /*#__PURE__*/React.createElement("main", {
+    className: "main"
+  }, step !== 'play' && /*#__PURE__*/React.createElement("div", {
     className: "container"
-  }, step === 'upload' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "VividNovel"), /*#__PURE__*/React.createElement("p", null, "\uC18C\uC124 \uD30C\uC77C(txt, pdf)\uC744 \uC5C5\uB85C\uB4DC\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("input", {
+  }, step === 'upload' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "\uC18C\uC124 \uD30C\uC77C(txt, pdf)\uC744 \uC5C5\uB85C\uB4DC\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("input", {
     type: "file",
     onChange: handleFile,
     accept: ".txt,.text,.pdf"
@@ -309,17 +333,14 @@ function App() {
     }), /*#__PURE__*/React.createElement("h3", null, bg.name), /*#__PURE__*/React.createElement("p", null, bg.mood));
   })), /*#__PURE__*/React.createElement("button", {
     onClick: startPlay
-  }, "\uC7AC\uC0DD \uC2DC\uC791")), step === 'play' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uC7A5\uBA74 \uC7AC\uC0DD"), /*#__PURE__*/React.createElement("div", {
-    id: "sceneSection",
-    className: "flex"
-  }, scenes.map(function (src, idx) {
-    return /*#__PURE__*/React.createElement("img", {
-      key: idx,
-      src: src,
-      alt: "Scene ".concat(idx + 1)
-    });
-  })), /*#__PURE__*/React.createElement("audio", {
+  }, "\uC7AC\uC0DD \uC2DC\uC791"))), step === 'play' && /*#__PURE__*/React.createElement("div", {
+    className: "scene-wrapper"
+  }, scenes[currentSceneIdx] && /*#__PURE__*/React.createElement("img", {
+    src: scenes[currentSceneIdx],
+    alt: "Scene ".concat(currentSceneIdx + 1),
+    className: "scene-image"
+  }), /*#__PURE__*/React.createElement("audio", {
     ref: audioRef
-  })));
+  }))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
