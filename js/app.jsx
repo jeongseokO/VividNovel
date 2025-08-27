@@ -1,16 +1,50 @@
-const { useState, useRef } = React;
+const { useState, useRef, useEffect } = React;
 
 const voiceOptions = ['Zephyr', 'Leda', 'Luca', 'Apollo', 'Charon'];
 
 function App() {
-  const [step, setStep] = useState('upload');
+  const [projects, setProjects] = useState(() => {
+    const saved = localStorage.getItem('projects');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [selectedId, setSelectedId] = useState(() => projects[0]?.id || null);
   const [file, setFile] = useState(null);
-  const [novelText, setNovelText] = useState('');
-  const [novelData, setNovelData] = useState(null);
   const [scenes, setScenes] = useState([]);
+  const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
+  const [publicProjects, setPublicProjects] = useState([]);
+  const [activeTab, setActiveTab] = useState('characters');
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
   const audioRef = useRef(null);
 
-  const handleFile = (e) => setFile(e.target.files[0]);
+  useEffect(() => {
+    localStorage.setItem('projects', JSON.stringify(projects));
+  }, [projects]);
+
+  useEffect(() => {
+    fetch('data/public-projects.json')
+      .then(res => res.json())
+      .then(setPublicProjects);
+  }, []);
+
+  useEffect(() => {
+    setActiveTab('characters');
+  }, [selectedId]);
+
+  const selectedProject = projects.find(p => p.id === selectedId);
+
+  function updateProject(id, data) {
+    setProjects(prev => prev.map(p => p.id === id ? { ...p, ...data } : p));
+  }
+
+  function handleNewProject() {
+    const name = prompt('프로젝트 이름을 입력하세요');
+    if (!name) return;
+    const id = Date.now();
+    setProjects(prev => [...prev, { id, name, step: 'upload', novelText: '', novelData: null }]);
+    setSelectedId(id);
+  }
+
+  const handleFile = e => setFile(e.target.files[0]);
 
   async function readFile(f) {
     if (f.type === 'application/pdf') {
@@ -28,23 +62,25 @@ function App() {
   }
 
   async function startGenerate() {
-    if (!file) {
+    if (!file || !selectedProject) {
       alert('파일을 선택하세요.');
       return;
     }
     const text = await readFile(file);
-    setNovelText(text);
     const res = await fetch('data/novel.json');
     const data = await res.json();
-    setNovelData(data);
-    setStep('setup');
+    updateProject(selectedId, { step: 'setup', novelText: text, novelData: data });
+    setScenes([]);
+    setCurrentSceneIdx(0);
   }
 
   function handleVoiceChange(idx, voice) {
-    setNovelData(prev => ({
-      ...prev,
-      characters: prev.characters.map((c, i) => i === idx ? { ...c, voice } : c)
-    }));
+    const nd = selectedProject.novelData;
+    const updated = {
+      ...nd,
+      characters: nd.characters.map((c, i) => i === idx ? { ...c, voice } : c)
+    };
+    updateProject(selectedId, { novelData: updated });
   }
 
   function chunkText(text, size = 300) {
@@ -60,7 +96,7 @@ function App() {
   async function generateScene(idx) {
     return new Promise(resolve => {
       setTimeout(() => {
-        const src = `https://placehold.co/400x300?text=Scene+${idx + 1}`;
+        const src = `https://placehold.co/800x600?text=Scene+${idx + 1}`;
         setScenes(prev => [...prev, src]);
         resolve();
       }, 500);
@@ -69,7 +105,7 @@ function App() {
 
   async function generateAudio(text) {
     const voices = {};
-    novelData.characters.forEach(c => voices[c.name] = c.voice);
+    selectedProject.novelData.characters.forEach(c => voices[c.name] = c.voice);
     const res = await fetch('/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -80,78 +116,151 @@ function App() {
   }
 
   async function startPlay() {
-    setStep('play');
-    const chunks = chunkText(novelText);
+    if (!selectedProject) return;
+    updateProject(selectedId, { step: 'play' });
+    setScenes([]);
+    setCurrentSceneIdx(0);
+    const chunks = chunkText(selectedProject.novelText);
     const preloadCount = Math.min(5, chunks.length);
     for (let i = 0; i < preloadCount; i++) {
-      generateScene(i);
+      await generateScene(i);
     }
     for (let i = 0; i < chunks.length; i++) {
+      setCurrentSceneIdx(i);
+      setIsAudioLoading(true);
       const src = await generateAudio(chunks[i]);
+      setIsAudioLoading(false);
+      audioRef.current.pause();
       audioRef.current.src = src;
       audioRef.current.play();
       const nextSceneIdx = i + preloadCount;
       if (nextSceneIdx < chunks.length) {
         generateScene(nextSceneIdx);
       }
-      await new Promise(res => audioRef.current.onended = res);
+      await new Promise(res => setTimeout(res, 5000));
+    }
+    audioRef.current.pause();
+  }
+
+  function toggleFullscreen() {
+    const el = document.querySelector('.scene-wrapper');
+    if (!document.fullscreenElement) {
+      el.requestFullscreen();
+    } else {
+      document.exitFullscreen();
     }
   }
 
   return (
-    <div className="container">
-      {step === 'upload' && (
-        <div>
-          <h1>VividNovel</h1>
-          <p>소설 파일(txt, pdf)을 업로드하세요.</p>
-          <input type="file" onChange={handleFile} accept=".txt,.text,.pdf" />
-          <button onClick={startGenerate}>생성 시작</button>
+    <div className="app">
+      <aside className="sidebar">
+        <h1 onClick={() => setSelectedId(null)}>VividNovel</h1>
+        <div className="new-project" onClick={handleNewProject}>+ 새 프로젝트</div>
+        <div className="projects">
+          {projects.map(p => (
+            <div
+              key={p.id}
+              className={`project-item ${p.id === selectedId ? 'active' : ''}`}
+              onClick={() => setSelectedId(p.id)}
+            >
+              {p.name}
+            </div>
+          ))}
         </div>
-      )}
-
-      {step === 'setup' && novelData && (
-        <div>
-          <h2>등장인물 &amp; 배경</h2>
-          <div className="flex">
-            {novelData.characters.map((ch, idx) => (
-              <div className="card" key={idx}>
-                <img src={ch.profileImage} alt={ch.name} />
-                <h3>{ch.name}</h3>
-                <p>{ch.appearance}</p>
-                <p>{ch.personality}</p>
-                <label>Voice:
-                  <select value={ch.voice} onChange={e => handleVoiceChange(idx, e.target.value)}>
-                    {voiceOptions.map(v => <option key={v} value={v}>{v}</option>)}
-                  </select>
-                </label>
+      </aside>
+      <main className="main">
+        {selectedProject ? (
+          <>
+            <div className="topbar">{selectedProject.name}</div>
+            {selectedProject.step === 'upload' && (
+              <div className="content">
+                <p>소설 파일(txt, pdf)을 업로드하세요.</p>
+                <input type="file" onChange={handleFile} accept=".txt,.text,.pdf" />
+                <button onClick={startGenerate}>생성 시작</button>
               </div>
-            ))}
-          </div>
-          <h2>배경</h2>
-          <div className="flex">
-            {novelData.backgrounds.map((bg, idx) => (
-              <div className="card" key={idx}>
-                <img src={bg.image} alt={bg.name} />
-                <h3>{bg.name}</h3>
-                <p>{bg.mood}</p>
-              </div>
-            ))}
-          </div>
-          <button onClick={startPlay}>재생 시작</button>
-        </div>
-      )}
+            )}
 
-      {step === 'play' && (
-        <div>
-          <h2>장면 재생</h2>
-          <div id="sceneSection" className="flex">
-            {scenes.map((src, idx) => (
-              <img key={idx} src={src} alt={`Scene ${idx + 1}`} />
-            ))}
-          </div>
-          <audio ref={audioRef}></audio>
-        </div>
-      )}
+            {selectedProject.step === 'setup' && selectedProject.novelData && (
+              <div className="content with-right-tabs">
+                <div className="main-setup">
+                  {activeTab === 'characters' && (
+                    <div className="flex">
+                      {selectedProject.novelData.characters.map((ch, idx) => (
+                        <div className="card" key={idx}>
+                          <img src={ch.profileImage} alt={ch.name} />
+                          <h3>{ch.name}</h3>
+                          <p>{ch.appearance}</p>
+                          <p>{ch.personality}</p>
+                          <label>Voice:
+                            <select value={ch.voice} onChange={e => handleVoiceChange(idx, e.target.value)}>
+                              {voiceOptions.map(v => <option key={v} value={v}>{v}</option>)}
+                            </select>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {activeTab === 'background' && (
+                    <div className="flex">
+                      {selectedProject.novelData.backgrounds.map((bg, idx) => (
+                        <div className="card" key={idx}>
+                          <img src={bg.image} alt={bg.name} />
+                          <h3>{bg.name}</h3>
+                          <p>{bg.mood}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {activeTab === 'episode' && (
+                    <div>
+                      <p>Episode 준비 중...</p>
+                    </div>
+                  )}
+                  <button onClick={startPlay}>재생 시작</button>
+                </div>
+                <aside className="right-tabs">
+                  <div className={'tab '+(activeTab === 'characters'?'active':'')} onClick={() => setActiveTab('characters')}>캐릭터</div>
+                  <div className={'tab '+(activeTab === 'background'?'active':'')} onClick={() => setActiveTab('background')}>배경</div>
+                  <div className={'tab '+(activeTab === 'episode'?'active':'')} onClick={() => setActiveTab('episode')}>Episode</div>
+                </aside>
+              </div>
+            )}
+
+            {selectedProject.step === 'play' && (
+              <div className="scene-wrapper">
+                {scenes[currentSceneIdx] && (
+                  <img
+                    src={scenes[currentSceneIdx]}
+                    alt={`Scene ${currentSceneIdx + 1}`}
+                    className="scene-image"
+                  />
+                )}
+                <button className="fullscreen-btn" onClick={toggleFullscreen}>⤢</button>
+                {isAudioLoading && (
+                  <div className="loading-overlay">
+                    <div className="spinner"></div>
+                  </div>
+                )}
+                <audio ref={audioRef}></audio>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="topbar">Home</div>
+            <div className="content">
+              <div className="public-grid">
+                {publicProjects.map(p => (
+                  <div key={p.id} className="public-card">
+                    <img src={p.thumbnail} alt={p.name} />
+                    <h3>{p.name}</h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </main>
     </div>
   );
 }
