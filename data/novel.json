@@ -1,0 +1,25 @@
+{
+  "characters": [
+    {
+      "name": "시실리아",
+      "appearance": "바람의 가호를 받은 소녀",
+      "personality": "용감하고 냉철함",
+      "voice": "Leda",
+      "profileImage": "https://placehold.co/150x150?text=Sicilia"
+    },
+    {
+      "name": "나레이션",
+      "appearance": "보이지 않는 화자",
+      "personality": "객관적",
+      "voice": "Zephyr",
+      "profileImage": "https://placehold.co/150x150?text=Narrator"
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "테레지아 광장",
+      "mood": "긴장감",
+      "image": "https://placehold.co/300x200?text=Square"
+    }
+  ]
+}
