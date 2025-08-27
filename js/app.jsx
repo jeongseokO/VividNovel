@@ -19,6 +19,7 @@ function App() {
   const [showMyCount, setShowMyCount] = useState(8);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [episodeStatus, setEpisodeStatus] = useState('idle');
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -51,13 +52,31 @@ function App() {
 
   function handleNewProject() {
     const id = Date.now();
-    const project = { id, name: '제목 없음', step: 'upload', novelText: '', novelData: null };
+    const project = { id, name: '제목 없음', step: 'upload', novelText: '', novelData: null, episodes: [] };
     setProjects(prev => [...prev, project]);
     openProject(id);
   }
 
   function updateProject(id, data) {
     setProjects(prev => prev.map(p => p.id === id ? { ...p, ...data } : p));
+  }
+
+  function getCurrentProject() {
+    return projects.find(p => p.id === selectedId);
+  }
+
+  function generateEpisode() {
+    setEpisodeStatus('generating');
+    setTimeout(() => {
+      const project = getCurrentProject();
+      if (!project) return;
+      const episodes = project.episodes || [];
+      const newEp = { id: Date.now(), title: `Episode ${episodes.length + 1}` };
+      const updated = [...episodes, newEp];
+      updateProject(selectedId, { episodes: updated });
+      setEpisodeStatus('completed');
+      setTimeout(() => setEpisodeStatus('idle'), 1000);
+    }, 1500);
   }
 
   function handleDrop(e) {
@@ -213,14 +232,22 @@ function App() {
             {projects.map(p => (
               <div key={p.id} className={`project-item ${p.id === selectedId ? 'active' : ''}`} onClick={() => openProject(p.id)}>{p.name}</div>
             ))}
-            <div className="new-project" onClick={handleNewProject}>+ 새 프로젝트</div>
           </div>
         </aside>
         <main className="main">{content}</main>
         {renderControlBar()}
-        {!username && <button className="login-btn top-login" onClick={() => location.href = 'login.html'}>로그인</button>}
+        <button className="login-btn top-login" onClick={handleAuth}>{username ? '로그아웃' : '로그인'}</button>
+        <button className="new-project-btn floating-new-project" onClick={handleNewProject}>+ 새 프로젝트</button>
       </div>
     );
+  }
+
+  function handleAuth() {
+    const username = localStorage.getItem('username');
+    if (username) {
+      localStorage.removeItem('username');
+    }
+    location.href = 'login.html';
   }
 
   function renderHome() {
@@ -311,9 +338,30 @@ function App() {
   }
 
   function renderEpisodes() {
+    const project = getCurrentProject();
+    const episodes = project?.episodes || [];
     const content = (
       <div className="main-setup">
-        <p className="empty-info">아직 정보가 없습니다.</p>
+        <section className="episodes-section">
+          <h3>이전에 만든 에피소드</h3>
+          {episodes.length === 0 ? (
+            <p className="empty-info">이전 에피소드가 없습니다.</p>
+          ) : (
+            <ul className="episode-list">
+              {episodes.map(ep => (
+                <li key={ep.id}>{ep.title}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section className="episodes-section">
+          <h3>새 에피소드</h3>
+          {episodeStatus === 'idle' && (
+            <button className="generate-episode-btn" onClick={generateEpisode}>생성하기</button>
+          )}
+          {episodeStatus === 'generating' && <p>생성 중...</p>}
+          {episodeStatus === 'completed' && <p>생성 완료!</p>}
+        </section>
       </div>
     );
     return renderWithLayout(content);
