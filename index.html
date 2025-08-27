@@ -6,6 +6,11 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <script>
+    if (!localStorage.getItem('username')) {
+      location.href = 'login.html';
+    }
+  </script>
   <div id="root"></div>
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.9.179/build/pdf.min.js"></script>
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>

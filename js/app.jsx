@@ -51,10 +51,8 @@ function App() {
   }
 
   function handleNewProject() {
-    const name = prompt('프로젝트 이름을 입력하세요');
-    if (!name) return;
     const id = Date.now();
-    setProjects(prev => [...prev, { id, name, step: 'upload', novelText: '', novelData: null }]);
+    setProjects(prev => [...prev, { id, name: '제목 없음', step: 'upload', novelText: '', novelData: null }]);
     setSelectedId(id);
   }
 
@@ -266,7 +264,7 @@ function App() {
         <div className="projects">
           <input type="file" onChange={handleFile} accept=".txt,.text,.pdf" />
           {projects.map(p => (
-          <button onClick={startGenerate}>생성 시작</button>
+          <button onClick={startGenerate}>프로젝트 시작</button>
             <div
               key={p.id}
               className={`project-item ${p.id === selectedId ? 'active' : ''}`}
@@ -296,7 +294,7 @@ function App() {
                 <img src={ch.profileImage} alt={ch.name} />
                 <input type="file" onChange={handleFile} accept=".txt,.text,.pdf" />
                 <h3>{ch.name}</h3>
-                <button onClick={startGenerate}>생성 시작</button>
+                <button onClick={startGenerate}>프로젝트 시작</button>
                 <p>{ch.appearance}</p>
                 <p>{ch.personality}</p>
                 <label>Voice:
