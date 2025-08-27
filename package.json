@@ -1,0 +1,8 @@
+{
+  "name": "vividnovel",
+  "version": "0.1.0",
+  "description": "Prototype site for novel visualization",
+  "scripts": {
+    "test": "echo \"No tests available\""
+  }
+}
