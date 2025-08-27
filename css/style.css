@@ -136,14 +136,7 @@ h1, h2 {
   margin-bottom: 10px;
 }
 button {
-  padding: 12px 24px;
-  font-size: 1rem;
-  margin-top: 20px;
-  background-color: #4a6cf7;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+@@ -119,80 +147,204 @@ button {
   transition: background 0.3s ease;
 }
 button:hover {
