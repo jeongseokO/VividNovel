@@ -3,7 +3,7 @@ const { useState, useEffect, useRef } = React;
 const voiceOptions = ['Zephyr', 'Leda', 'Luca', 'Apollo', 'Charon'];
 
 function App() {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState('home'); // 'home','upload','characters','backgrounds','episodes','play'
   const [projects, setProjects] = useState(() => {
     const saved = localStorage.getItem('projects');
     return saved ? JSON.parse(saved) : [];
@@ -17,8 +17,8 @@ function App() {
   const [publicProjects, setPublicProjects] = useState([]);
   const [publicCount, setPublicCount] = useState(8);
   const [showMyCount, setShowMyCount] = useState(8);
-  const [activeTab, setActiveTab] = useState('characters');
   const [isAudioLoading, setIsAudioLoading] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -93,9 +93,9 @@ function App() {
     const text = await readFile(target);
     const res = await fetch('data/novel.json');
     const data = await res.json();
-    updateProject(selectedId, { step: 'setup', novelText: text, novelData: data });
+    updateProject(selectedId, { step: 'characters', novelText: text, novelData: data });
     setNovelData(data);
-    setView('setup');
+    setView('characters');
   }
 
   function handleVoiceChange(idx, voice) {
@@ -122,8 +122,7 @@ function App() {
     return new Promise(resolve => {
       setTimeout(() => {
         const src = `https://placehold.co/800x600?text=Scene+${idx + 1}`;
-        setScenes(prev => [...prev, src]);
-        resolve();
+        resolve(src);
       }, 500);
     });
   }
@@ -145,52 +144,66 @@ function App() {
     const project = projects.find(p => p.id === selectedId);
     if (!project) return;
     const chunks = chunkText(project.novelText);
-    setScenes([]);
-    setAudioSources([]);
+    const newScenes = [];
+    const newAudios = [];
     for (let i = 0; i < chunks.length; i++) {
-      await generateScene(i);
-      const src = await generateAudio(chunks[i]);
-      setAudioSources(prev => [...prev, src]);
+      const sceneSrc = await generateScene(i);
+      newScenes.push(sceneSrc);
+      const audioSrc = await generateAudio(chunks[i]);
+      newAudios.push(audioSrc);
     }
+    setScenes(newScenes);
+    setAudioSources(newAudios);
     setCurrentSceneIdx(0);
     setView('play');
     updateProject(selectedId, { step: 'play' });
-    if (audioSources[0]) {
-      audioRef.current.src = audioSources[0];
+    if (newAudios[0]) {
+      audioRef.current.src = newAudios[0];
       audioRef.current.play();
+      setPlaying(true);
     }
   }
 
-  function prevScene() {
-    if (currentSceneIdx > 0) {
-      const idx = currentSceneIdx - 1;
-      setCurrentSceneIdx(idx);
-      if (audioSources[idx]) {
-        audioRef.current.src = audioSources[idx];
-        audioRef.current.play();
-      }
-    }
-  }
-
-  function nextScene() {
-    if (currentSceneIdx < scenes.length - 1) {
-      const idx = currentSceneIdx + 1;
-      setCurrentSceneIdx(idx);
-      if (audioSources[idx]) {
-        audioRef.current.src = audioSources[idx];
-        audioRef.current.play();
-      }
-    }
+  function skip(sec) {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + sec));
   }
 
   function togglePlay() {
     const audio = audioRef.current;
     if (!audio) return;
-    if (audio.paused) audio.play();
-    else audio.pause();
+    if (audio.paused) {
+      audio.play();
+      setPlaying(true);
+    } else {
+      audio.pause();
+      setPlaying(false);
+    }
   }
 
-  function renderWithLayout(content, control) {
+  function handleFullScreen() {
+    const el = document.querySelector('.scene-wrapper');
+    if (!document.fullscreenElement) el.requestFullscreen();
+    else document.exitFullscreen();
+  }
+
+  function renderControlBar() {
+    if (view === 'home' || selectedId === null) return null;
+    return (
+      <aside className="controlbar">
+        <div className="tabs">
+          <div className={`tab ${view === 'upload' ? 'active' : ''}`} onClick={() => setView('upload')}>업로드</div>
+          <div className={`tab ${view === 'characters' ? 'active' : ''}`} onClick={() => setView('characters')}>캐릭터</div>
+          <div className={`tab ${view === 'backgrounds' ? 'active' : ''}`} onClick={() => setView('backgrounds')}>배경</div>
+          <div className={`tab ${view === 'episodes' ? 'active' : ''}`} onClick={() => setView('episodes')}>에피소드</div>
+        </div>
+        {view !== 'play' && <button className="play-btn" onClick={startPlay}>재생</button>}
+      </aside>
+    );
+  }
+
+  function renderWithLayout(content) {
     const username = localStorage.getItem('username');
     return (
       <div className="app">
@@ -204,7 +217,7 @@ function App() {
           </div>
         </aside>
         <main className="main">{content}</main>
-        <aside className="controlbar">{control || <p className="empty-info">아직 정보가 없습니다.</p>}</aside>
+        {renderControlBar()}
         {!username && <button className="login-btn top-login" onClick={() => location.href = 'login.html'}>로그인</button>}
       </div>
     );
@@ -244,7 +257,7 @@ function App() {
         </section>
       </div>
     );
-    return renderWithLayout(content, null);
+    return renderWithLayout(content);
   }
 
   function renderUpload() {
@@ -253,78 +266,81 @@ function App() {
         <p>여기로 텍스트 문서나 PDF를 Drag&Drop하세요.</p>
       </div>
     );
-    return renderWithLayout(content, null);
+    return renderWithLayout(content);
   }
 
-  function renderSetup() {
+  function renderCharacters() {
     if (!novelData) return renderUpload();
     const content = (
       <div className="main-setup">
-        {activeTab === 'characters' && (
-          <div className="flex">
-            {novelData.characters.map((ch, idx) => (
-              <div className="card" key={idx}>
-                <img src={ch.profileImage} alt={ch.name} />
-                <h3>{ch.name}</h3>
-                <p>{ch.appearance}</p>
-                <p>{ch.personality}</p>
-                <label>Voice:
-                  <select value={ch.voice} onChange={e => handleVoiceChange(idx, e.target.value)}>
-                    {voiceOptions.map(v => <option key={v} value={v}>{v}</option>)}
-                  </select>
-                </label>
-              </div>
-            ))}
-          </div>
-        )}
-        {activeTab === 'backgrounds' && (
-          <div className="flex">
-            {novelData.backgrounds.map((bg, idx) => (
-              <div className="card" key={idx}>
-                <img src={bg.image} alt={bg.name} />
-                <h3>{bg.name}</h3>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="flex">
+          {novelData.characters.map((ch, idx) => (
+            <div className="card" key={idx}>
+              <img src={ch.profileImage} alt={ch.name} />
+              <h3>{ch.name}</h3>
+              <p>{ch.appearance}</p>
+              <p>{ch.personality}</p>
+              <label>Voice:
+                <select value={ch.voice} onChange={e => handleVoiceChange(idx, e.target.value)}>
+                  {voiceOptions.map(v => <option key={v} value={v}>{v}</option>)}
+                </select>
+              </label>
+            </div>
+          ))}
+        </div>
       </div>
     );
-    const control = (
-      <div className="tabs">
-        <div className={`tab ${activeTab === 'characters' ? 'active' : ''}`} onClick={() => setActiveTab('characters')}>등장인물</div>
-        <div className={`tab ${activeTab === 'backgrounds' ? 'active' : ''}`} onClick={() => setActiveTab('backgrounds')}>배경</div>
-        <button className="play-btn" onClick={startPlay}>재생</button>
+    return renderWithLayout(content);
+  }
+
+  function renderBackgrounds() {
+    if (!novelData) return renderUpload();
+    const content = (
+      <div className="main-setup">
+        <div className="flex">
+          {novelData.backgrounds.map((bg, idx) => (
+            <div className="card" key={idx}>
+              <img src={bg.image} alt={bg.name} />
+              <h3>{bg.name}</h3>
+            </div>
+          ))}
+        </div>
       </div>
     );
-    return renderWithLayout(content, control);
+    return renderWithLayout(content);
+  }
+
+  function renderEpisodes() {
+    const content = (
+      <div className="main-setup">
+        <p className="empty-info">아직 정보가 없습니다.</p>
+      </div>
+    );
+    return renderWithLayout(content);
   }
 
   function renderPlay() {
     const content = (
       <div className="scene-wrapper">
         {scenes[currentSceneIdx] && <img src={scenes[currentSceneIdx]} className="scene-image" alt="Scene" />}
-        <button className="fullscreen-btn" onClick={() => {
-          const el = document.querySelector('.scene-wrapper');
-          if (!document.fullscreenElement) el.requestFullscreen();
-          else document.exitFullscreen();
-        }}>전체 화면</button>
         {isAudioLoading && <div className="loading-overlay"><div className="spinner"></div></div>}
         <audio ref={audioRef} />
+        <div className="video-controls">
+          <button onClick={() => skip(-10)}>⏪ 10s</button>
+          <button onClick={togglePlay}>{playing ? '❚❚' : '▶'}</button>
+          <button onClick={() => skip(10)}>10s ⏩</button>
+          <button onClick={handleFullScreen}>⛶</button>
+        </div>
       </div>
     );
-    const control = (
-      <div className="play-controls">
-        <button onClick={prevScene}>◀</button>
-        <button onClick={togglePlay}>⏯</button>
-        <button onClick={nextScene}>▶</button>
-      </div>
-    );
-    return renderWithLayout(content, control);
+    return renderWithLayout(content);
   }
 
   if (view === 'home') return renderHome();
   if (view === 'upload') return renderUpload();
-  if (view === 'setup') return renderSetup();
+  if (view === 'characters') return renderCharacters();
+  if (view === 'backgrounds') return renderBackgrounds();
+  if (view === 'episodes') return renderEpisodes();
   if (view === 'play') return renderPlay();
   return renderHome();
 }

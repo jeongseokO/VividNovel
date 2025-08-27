@@ -23,24 +23,30 @@ body {
 .projects {
   flex: 1;
   overflow-y: auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
-.project-item {
+.project-item,
+.new-project {
   padding: 10px;
   border-radius: 4px;
   cursor: pointer;
+  flex: 0 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+.project-item {
+  height: 40px;
+  display: flex;
+  align-items: center;
 }
 .project-item.active {
   background: #343541;
 }
 .new-project {
-  padding: 10px;
   background: #343541;
   text-align: center;
-  border-radius: 4px;
-  cursor: pointer;
   margin-bottom: 10px;
 }
 .main {
@@ -130,14 +136,7 @@ h1, h2 {
   margin-bottom: 10px;
 }
 button {
-  padding: 12px 24px;
-  font-size: 1rem;
-  margin-top: 20px;
-  background-color: #4a6cf7;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+@@ -119,80 +147,204 @@ button {
   transition: background 0.3s ease;
 }
 button:hover {
@@ -172,22 +171,25 @@ input[type="file"] {
   margin: 0 5px;
 }
 
-.fullscreen-btn {
+
+.video-controls {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
   background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: none;
-  padding: 6px 8px;
+  padding: 8px;
   border-radius: 4px;
-  cursor: pointer;
 }
 
-.play-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.video-controls button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .drop-zone {
