@@ -1,0 +1,14 @@
+{
+  "name": "vividnovel",
+  "version": "0.1.0",
+  "description": "Prototype site for novel visualization",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"No tests available\""
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
+  }
+}
