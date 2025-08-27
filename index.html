@@ -1,18 +1,21 @@
+tml
+신규
++16
+-0
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>VividNovel - Upload</title>
+  <title>VividNovel</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>VividNovel</h1>
-    <p>소설 파일(txt, pdf)을 업로드하세요.</p>
-    <input type="file" id="fileInput" accept=".txt,.text,.pdf" />
-    <button id="analyzeBtn">분석 시작</button>
-  </div>
+  <div id="root"></div>
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.9.179/build/pdf.min.js"></script>
-  <script type="module" src="js/upload.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@7/babel.min.js"></script>
+  <script type="text/babel" src="js/app.jsx"></script>
 </body>
 </html>
