@@ -1,19 +1,19 @@
 "use strict";
 
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -22,34 +22,65 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _React = React,
   useState = _React.useState,
-  useRef = _React.useRef;
+  useRef = _React.useRef,
+  useEffect = _React.useEffect;
 var voiceOptions = ['Zephyr', 'Leda', 'Luca', 'Apollo', 'Charon'];
 function App() {
-  var _useState = useState('upload'),
+  var _useState = useState(function () {
+      var saved = localStorage.getItem('projects');
+      return saved ? JSON.parse(saved) : [];
+    }),
     _useState2 = _slicedToArray(_useState, 2),
-    step = _useState2[0],
-    setStep = _useState2[1];
-  var _useState3 = useState(null),
+    projects = _useState2[0],
+    setProjects = _useState2[1];
+  var _useState3 = useState(function () {
+      var _projects$;
+      return ((_projects$ = projects[0]) === null || _projects$ === void 0 ? void 0 : _projects$.id) || null;
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
-    file = _useState4[0],
-    setFile = _useState4[1];
-  var _useState5 = useState(''),
+    selectedId = _useState4[0],
+    setSelectedId = _useState4[1];
+  var _useState5 = useState(null),
     _useState6 = _slicedToArray(_useState5, 2),
-    novelText = _useState6[0],
-    setNovelText = _useState6[1];
-  var _useState7 = useState(null),
+    file = _useState6[0],
+    setFile = _useState6[1];
+  var _useState7 = useState([]),
     _useState8 = _slicedToArray(_useState7, 2),
-    novelData = _useState8[0],
-    setNovelData = _useState8[1];
-  var _useState9 = useState([]),
+    scenes = _useState8[0],
+    setScenes = _useState8[1];
+  var _useState9 = useState(0),
     _useState0 = _slicedToArray(_useState9, 2),
-    scenes = _useState0[0],
-    setScenes = _useState0[1];
+    currentSceneIdx = _useState0[0],
+    setCurrentSceneIdx = _useState0[1];
   var audioRef = useRef(null);
-  var _useState1 = useState(0),
-    _useState10 = _slicedToArray(_useState1, 2),
-    currentSceneIdx = _useState10[0],
-    setCurrentSceneIdx = _useState10[1];
+  useEffect(function () {
+    localStorage.setItem('projects', JSON.stringify(projects));
+  }, [projects]);
+  var selectedProject = projects.find(function (p) {
+    return p.id === selectedId;
+  });
+  function updateProject(id, data) {
+    setProjects(function (prev) {
+      return prev.map(function (p) {
+        return p.id === id ? _objectSpread(_objectSpread({}, p), data) : p;
+      });
+    });
+  }
+  function handleNewProject() {
+    var name = prompt('프로젝트 이름을 입력하세요');
+    if (!name) return;
+    var id = Date.now();
+    setProjects(function (prev) {
+      return [].concat(_toConsumableArray(prev), [{
+        id: id,
+        name: name,
+        step: 'upload',
+        novelText: '',
+        novelData: null
+      }]);
+    });
+    setSelectedId(id);
+  }
   var handleFile = function handleFile(e) {
     return setFile(e.target.files[0]);
   };
@@ -119,7 +150,7 @@ function App() {
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.n) {
           case 0:
-            if (file) {
+            if (!(!file || !selectedProject)) {
               _context2.n = 1;
               break;
             }
@@ -130,7 +161,6 @@ function App() {
             return readFile(file);
           case 2:
             text = _context2.v;
-            setNovelText(text);
             _context2.n = 3;
             return fetch('data/novel.json');
           case 3:
@@ -139,8 +169,13 @@ function App() {
             return res.json();
           case 4:
             data = _context2.v;
-            setNovelData(data);
-            setStep('setup');
+            updateProject(selectedId, {
+              step: 'setup',
+              novelText: text,
+              novelData: data
+            });
+            setScenes([]);
+            setCurrentSceneIdx(0);
           case 5:
             return _context2.a(2);
         }
@@ -149,14 +184,16 @@ function App() {
     return _startGenerate.apply(this, arguments);
   }
   function handleVoiceChange(idx, voice) {
-    setNovelData(function (prev) {
-      return _objectSpread(_objectSpread({}, prev), {}, {
-        characters: prev.characters.map(function (c, i) {
-          return i === idx ? _objectSpread(_objectSpread({}, c), {}, {
-            voice: voice
-          }) : c;
-        })
-      });
+    var nd = selectedProject.novelData;
+    var updated = _objectSpread(_objectSpread({}, nd), {}, {
+      characters: nd.characters.map(function (c, i) {
+        return i === idx ? _objectSpread(_objectSpread({}, c), {}, {
+          voice: voice
+        }) : c;
+      })
+    });
+    updateProject(selectedId, {
+      novelData: updated
     });
   }
   function chunkText(text) {
@@ -179,7 +216,7 @@ function App() {
           case 0:
             return _context3.a(2, new Promise(function (resolve) {
               setTimeout(function () {
-                var src = "https://placehold.co/400x300?text=Scene+".concat(idx + 1);
+                var src = "https://placehold.co/800x600?text=Scene+".concat(idx + 1);
                 setScenes(function (prev) {
                   return [].concat(_toConsumableArray(prev), [src]);
                 });
@@ -201,7 +238,7 @@ function App() {
         while (1) switch (_context4.n) {
           case 0:
             voices = {};
-            novelData.characters.forEach(function (c) {
+            selectedProject.novelData.characters.forEach(function (c) {
               return voices[c.name] = c.voice;
             });
             _context4.n = 1;
@@ -236,32 +273,42 @@ function App() {
       return _regenerator().w(function (_context5) {
         while (1) switch (_context5.n) {
           case 0:
-            setStep('play');
-            chunks = chunkText(novelText);
-            preloadCount = Math.min(5, chunks.length);
-            i = 0;
-          case 1:
-            if (!(i < preloadCount)) {
-              _context5.n = 3;
+            if (selectedProject) {
+              _context5.n = 1;
               break;
             }
-            _context5.n = 2;
-            return generateScene(i);
+            return _context5.a(2);
+          case 1:
+            updateProject(selectedId, {
+              step: 'play'
+            });
+            setScenes([]);
+            setCurrentSceneIdx(0);
+            chunks = chunkText(selectedProject.novelText);
+            preloadCount = Math.min(5, chunks.length);
+            i = 0;
           case 2:
-            i++;
-            _context5.n = 1;
-            break;
+            if (!(i < preloadCount)) {
+              _context5.n = 4;
+              break;
+            }
+            _context5.n = 3;
+            return generateScene(i);
           case 3:
-            _i = 0;
+            i++;
+            _context5.n = 2;
+            break;
           case 4:
+            _i = 0;
+          case 5:
             if (!(_i < chunks.length)) {
-              _context5.n = 7;
+              _context5.n = 8;
               break;
             }
             setCurrentSceneIdx(_i);
-            _context5.n = 5;
+            _context5.n = 6;
             return generateAudio(chunks[_i]);
-          case 5:
+          case 6:
             src = _context5.v;
             audioRef.current.pause();
             audioRef.current.src = src;
@@ -270,17 +317,17 @@ function App() {
             if (nextSceneIdx < chunks.length) {
               generateScene(nextSceneIdx);
             }
-            _context5.n = 6;
+            _context5.n = 7;
             return new Promise(function (res) {
               return setTimeout(res, 5000);
             });
-          case 6:
-            _i++;
-            _context5.n = 4;
-            break;
           case 7:
-            audioRef.current.pause();
+            _i++;
+            _context5.n = 5;
+            break;
           case 8:
+            audioRef.current.pause();
+          case 9:
             return _context5.a(2);
         }
       }, _callee5);
@@ -291,19 +338,34 @@ function App() {
     className: "app"
   }, /*#__PURE__*/React.createElement("aside", {
     className: "sidebar"
-  }, /*#__PURE__*/React.createElement("h1", null, "VividNovel")), /*#__PURE__*/React.createElement("main", {
+  }, /*#__PURE__*/React.createElement("h1", null, "VividNovel"), /*#__PURE__*/React.createElement("div", {
+    className: "projects"
+  }, projects.map(function (p) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.id,
+      className: "project-item ".concat(p.id === selectedId ? 'active' : ''),
+      onClick: function onClick() {
+        return setSelectedId(p.id);
+      }
+    }, p.name);
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "new-project",
+    onClick: handleNewProject
+  }, "+ \uC0C8 \uD504\uB85C\uC81D\uD2B8")), /*#__PURE__*/React.createElement("main", {
     className: "main"
-  }, step !== 'play' && /*#__PURE__*/React.createElement("div", {
-    className: "container"
-  }, step === 'upload' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "\uC18C\uC124 \uD30C\uC77C(txt, pdf)\uC744 \uC5C5\uB85C\uB4DC\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("input", {
+  }, selectedProject ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "topbar"
+  }, selectedProject.name), selectedProject.step !== 'play' && /*#__PURE__*/React.createElement("div", {
+    className: "content"
+  }, selectedProject.step === 'upload' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "\uC18C\uC124 \uD30C\uC77C(txt, pdf)\uC744 \uC5C5\uB85C\uB4DC\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("input", {
     type: "file",
     onChange: handleFile,
     accept: ".txt,.text,.pdf"
   }), /*#__PURE__*/React.createElement("button", {
     onClick: startGenerate
-  }, "\uC0DD\uC131 \uC2DC\uC791")), step === 'setup' && novelData && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uB4F1\uC7A5\uC778\uBB3C & \uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
+  }, "\uC0DD\uC131 \uC2DC\uC791")), selectedProject.step === 'setup' && selectedProject.novelData && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uB4F1\uC7A5\uC778\uBB3C & \uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
     className: "flex"
-  }, novelData.characters.map(function (ch, idx) {
+  }, selectedProject.novelData.characters.map(function (ch, idx) {
     return /*#__PURE__*/React.createElement("div", {
       className: "card",
       key: idx
@@ -323,7 +385,7 @@ function App() {
     }))));
   })), /*#__PURE__*/React.createElement("h2", null, "\uBC30\uACBD"), /*#__PURE__*/React.createElement("div", {
     className: "flex"
-  }, novelData.backgrounds.map(function (bg, idx) {
+  }, selectedProject.novelData.backgrounds.map(function (bg, idx) {
     return /*#__PURE__*/React.createElement("div", {
       className: "card",
       key: idx
@@ -333,7 +395,7 @@ function App() {
     }), /*#__PURE__*/React.createElement("h3", null, bg.name), /*#__PURE__*/React.createElement("p", null, bg.mood));
   })), /*#__PURE__*/React.createElement("button", {
     onClick: startPlay
-  }, "\uC7AC\uC0DD \uC2DC\uC791"))), step === 'play' && /*#__PURE__*/React.createElement("div", {
+  }, "\uC7AC\uC0DD \uC2DC\uC791"))), selectedProject.step === 'play' && /*#__PURE__*/React.createElement("div", {
     className: "scene-wrapper"
   }, scenes[currentSceneIdx] && /*#__PURE__*/React.createElement("img", {
     src: scenes[currentSceneIdx],
@@ -341,6 +403,11 @@ function App() {
     className: "scene-image"
   }), /*#__PURE__*/React.createElement("audio", {
     ref: audioRef
-  }))));
+  }))) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "topbar"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "content"
+  }, "\uD504\uB85C\uC81D\uD2B8\uB97C \uC120\uD0DD\uD558\uAC70\uB098 \uC0C8\uB85C \uB9CC\uB4DC\uC138\uC694."))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+
