@@ -49,6 +49,21 @@ body {
   flex-direction: column;
   background: #f7f7f8;
 }
+
+.controlbar {
+  width: 260px;
+  background: #fff;
+  border-left: 1px solid #e5e5e5;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.top-login {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
 .topbar {
   height: 50px;
   background: #fff;
@@ -63,28 +78,32 @@ body {
   padding: 20px;
 }
 
-.content.with-right-tabs {
-  display: flex;
-}
 .main-setup {
   flex: 1;
   padding-right: 20px;
 }
-.right-tabs {
-  width: 180px;
-  background: #fff;
-  border-left: 1px solid #e5e5e5;
+
+.tabs {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
-.right-tabs .tab {
-  padding: 15px;
+
+.tab {
+  padding: 12px;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fafafa;
 }
-.right-tabs .tab.active {
-  background: #f5f5f5;
+
+.tab.active {
+  background: #e6e6e6;
   font-weight: bold;
+}
+
+.play-btn {
+  margin-top: auto;
 }
 h1, h2 {
   text-align: center;
@@ -163,6 +182,27 @@ input[type="file"] {
   padding: 6px 8px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.play-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drop-zone {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  color: #888;
+  font-size: 18px;
+}
+
+.empty-info {
+  color: #888;
 }
 
 .loading-overlay {
