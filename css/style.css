@@ -23,6 +23,9 @@ body {
 .projects {
   flex: 1;
   overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
 }
 .project-item {
   padding: 10px;
@@ -139,6 +142,15 @@ input[type="file"] {
   width: auto;
   height: auto;
   object-fit: contain;
+}
+
+.controls {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.controls button {
+  margin: 0 5px;
 }
 
 .fullscreen-btn {
